@@ -1,0 +1,492 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans">
+<link rel="stylesheet" href="weatherPanel.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+</head>
+<script>
+
+function updateClock ()
+{
+	var currentdate = new Date(); 
+	var hour = currentdate.getHours();
+	var minutes = currentdate.getMinutes();
+	var seconds = currentdate.getSeconds();
+
+	//zero padding
+	if(seconds < 10) 
+		seconds = "0" + seconds;
+	if(minutes < 10) 
+		minutes = "0" + minutes;
+	if(hour < 10) 
+		hour = "0" + hour;
+	
+	jQuery('#clockHr').html(hour);
+	jQuery('#clockMin').html(minutes);
+	jQuery('#clockSec').html(seconds);
+	
+	/*if(minutes = '00')
+	{
+		updateHourlyForecast();
+	}
+	
+	if(hour == '00' && minutes == '00')
+	{
+		updateDate();
+	}	*/
+}
+
+function updateDate ()
+{
+	var currentdate = new Date(); 
+	var date = currentdate.getDate();
+
+	var monthLookup = new Array();
+	monthLookup[0] = "January";
+	monthLookup[1] = "February";
+	monthLookup[2] = "March";
+	monthLookup[3] = "April";
+	monthLookup[4] = "May";
+	monthLookup[5] = "June";
+	monthLookup[6] = "July";
+	monthLookup[7] = "August";
+	monthLookup[8] = "September";
+	monthLookup[9] = "October";
+	monthLookup[10] = "November";
+	monthLookup[11] = "December";
+	var month = monthLookup[currentdate.getMonth()];
+
+	var weekdayLookup = new Array(7);
+	weekdayLookup[0]=  "Sunday";
+	weekdayLookup[1] = "Monday";
+	weekdayLookup[2] = "Tuesday";
+	weekdayLookup[3] = "Wednesday";
+	weekdayLookup[4] = "Thursday";
+	weekdayLookup[5] = "Friday";
+	weekdayLookup[6] = "Saturday";
+	var day = weekdayLookup[currentdate.getDay()];
+
+	var year = currentdate.getFullYear();
+
+	jQuery('#dateDayDate').html(date);
+	jQuery('#dateDay').html(day);
+	jQuery('#dateMonth').html(month);
+	jQuery('#dateYear').html(year);
+}
+
+function updateAstronomy ()
+{
+	var sunriseHr;
+	var sunriseMin;
+	var sunsetHr;
+	var sunsetMin;
+	
+	$.getJSON(astronomyURL)
+		.then(function(parsed_json) 
+		{
+			console.log(parsed_json['moon_phase']['sunrise']['hour']);
+			sunriseHr = parsed_json['moon_phase']['sunrise']['hour'];
+			sunriseMin = parsed_json['moon_phase']['sunrise']['minute'];
+			sunsetHr = parsed_json['moon_phase']['sunset']['hour'];
+			sunsetMin = parsed_json['moon_phase']['sunset']['minute'];
+			
+			if(sunriseHr < 10) 
+				sunriseHr = "0" + sunriseHr;
+
+			if(sunsetHr < 10) 
+				sunsetHr = "0" + sunsetHr;
+
+
+			jQuery('#astroSunriseIcon').html('<img src=' + smallIconURL + 'sunrise.png>');
+			jQuery('#astroSunsetIcon').html('<img src=' + smallIconURL + 'sunset.png>');			
+			jQuery('#astroSunriseHr').html(sunriseHr);
+			jQuery('#astroSunriseMin').html(sunriseMin);
+			jQuery('#astroSusnetHr').html(sunsetHr);
+			jQuery('#astroSunsetMin').html(sunsetMin);
+		})
+		.fail(function() 
+		{
+			sunriseHr = 6;
+			sunriseMin = 45;
+			sunsetHr = 20;
+			sunsetMin = 53;
+			
+			if(sunriseHr < 10) 
+				sunriseHr = "0" + sunriseHr;
+			if(sunriseMin < 10) 
+				sunriseMin = "0" + sunriseMin;
+			if(sunsetHr < 10) 
+				sunsetHr = "0" + sunsetHr;
+			if(sunsetMin < 10) 
+				sunsetMin = "0" + sunsetMin;
+
+			jQuery('#astroSunriseIcon').html('<img src=' + smallIconURL + 'sunrise.png>');
+			jQuery('#astroSunsetIcon').html('<img src=' + smallIconURL + 'sunset.png>');			
+			jQuery('#astroSunriseHr').html(sunriseHr);
+			jQuery('#astroSunriseMin').html(sunriseMin);
+			jQuery('#astroSusnetHr').html(sunsetHr);
+			jQuery('#astroSunsetMin').html(sunsetMin);
+		});
+
+
+		
+}
+
+function updateCurrentWeather ()
+{
+	var location = 'Grayslake';
+	var temp_c = '18';
+	var relative_humidity = '50';
+	var weather = 'cloudy';
+	var feelslike_c = '20';
+	var UV = 8;
+	var icon = 'chancetstorms';
+	var windDir = 'NW';
+	var windKhp = 32;
+	var windGustKhp = 50;
+	
+	$.getJSON(nowURL)
+		.then(function(parsed_json) 
+		{
+			location = parsed_json['location']['city'];
+			temp_c = parsed_json['current_observation']['temp_c'];
+			relative_humidity = parsed_json['current_observation']['relative_humidity'];
+			weather = parsed_json['current_observation']['weather'];
+			feelslike_c = parsed_json['current_observation']['feelslike_c'];
+			UV = parsed_json['current_observation']['UV'];
+			windDir = parsed_json['current_observation']['wind_dir'];
+			windKph = parsed_json['current_observation']['wind_kph'];
+			windGustKph = parsed_json['current_observation']['wind_gust_kph'];
+			icon = parsed_json['current_observation']['icon'];			
+			icon_url = parsed_json['current_observation']['icon_url'];
+			var filename = icon_url.substring(icon_url.lastIndexOf('/')+1);
+			icon = filename.slice(0, -4);
+			
+			temp_c = Math.round(temp_c);
+			feelslike_c = Math.round(feelslike_c);
+			
+			jQuery('#location').html(location);
+			jQuery('#nowFeelsLike').html("feels like " + feelslike_c + "&deg;");
+			jQuery('#nowIcon').html('<img src=' + iconURL + icon + iconExtension + '>');
+			jQuery('#nowTemp').html(temp_c + "&deg;");
+			jQuery('#nowHumidity').html('<img src=' + smallIconURL + 'humidity.png>' + relative_humidity + '%');
+			jQuery('#nowWeatherText').html(weather);
+			jQuery('#nowWind').html('<img src=' + smallIconURL + 'wind.png>' + windDir + 'kph');
+
+			jQuery('#nowUV').html("UV: " + UV);
+			//jQuery('#nowUV').html("<img src=icons/decos/sunglasses.png>");
+			/*
+			jQuery('#nowUV').empty();
+			jQuery('#nowUV').append('<div id="uvIcon"><img src=' + smallIconURL + 'sun.png></div>');
+			for(var i=0; i<UV; i++)
+			{
+				var hue = 90 - (90.0 * (i / 10.0) );
+				jQuery('#nowUV').append('<div id="uv-block'+i+'"></div>');
+				jQuery('#uv-block'+i).css('background-color', 'hsl(' + hue + ', 50%, 50%)');
+			}
+			for(var i=UV; i<10; i++)
+			{
+				jQuery('#nowUV').append('<div id="uv-block'+i+'"></div>');
+				jQuery('#uv-block'+i).css('background-color', 'hsl(0, 0%, 25%)');
+			}*/
+			
+		})
+		.fail(function() 
+		{
+			jQuery('#location').html(location);
+			jQuery('#nowFeelsLike').html("feels like " + feelslike_c + "&deg;");
+			jQuery('#nowIcon').html('<img src=' + iconURL + icon + iconExtension + '>');
+			jQuery('#nowTemp').html(temp_c + "&deg;");
+			jQuery('#nowHumidity').html('<img src=' + smallIconURL + 'humidity.png>' + relative_humidity + '%');
+			jQuery('#nowWeatherText').html(weather);
+			jQuery('#nowWind').html('<img src=' + smallIconURL + 'wind.png>' + windDir + ' ' + windKhp + ' kph');
+			
+			jQuery('#nowUV').html('<img src=' + smallIconURL + 'sun.png> ' + UV);
+			//jQuery('#nowUV').html("<img src=icons/decos/sunglasses.png>");
+			
+			/*jQuery('#nowUV').clear();
+			jQuery('#nowUV').append('<div id="uvIcon"><img src=' + smallIconURL + 'sun.png></div>');
+			for(var i=0; i<UV; i++)
+			{
+				var hue = 90 - (90.0 * (i / 10.0) );
+				jQuery('#nowUV').append('<div id="uv-block'+i+'"></div>');
+				jQuery('#uv-block'+i).css('background-color', 'hsl(' + hue + ', 50%, 50%)');
+			}
+			for(var i=UV; i<10; i++)
+			{
+				jQuery('#nowUV').append('<div id="uv-block'+i+'"></div>');
+				jQuery('#uv-block'+i).css('background-color', 'hsl(0, 0%, 25%)');
+			}*/
+		});
+			
+
+}
+
+function updateDailyForecast ()
+{
+	var forcastDay;
+	var highTemp;
+	var lowTemp;
+	var icon;
+	var probRain;
+	var mmRain;
+	var humidity;
+	
+	var forcastBlock = '';
+
+	$.getJSON(forcastDailyURL)
+		.then(function(parsed_json) 
+		{
+			var simpleforecast = parsed_json['forecast']['simpleforecast']['forecastday'];
+
+			forcastBlock = '<div id="dailyPanel">';
+			for (index in simpleforecast) 
+			{
+				forcastDay = simpleforecast[index]['date']['weekday'];
+				highTemp = simpleforecast[index]['high']['celsius'];
+				lowTemp = simpleforecast[index]['low']['celsius'];
+				icon = simpleforecast[index]['icon'];
+				probRain = simpleforecast[index]['pop'];
+				mmRain = simpleforecast[index]['qpf_allday']['mm'];
+				humidity = simpleforecast[index]['avehumidity'];				
+				
+				if( index == 0)
+				{
+					jQuery('#nowTempMinMax').html('<img src=' + smallIconURL + 'temp_high.png>' + lowTemp + '&deg; | ' + highTemp + '&deg;');					
+				}
+				else
+				{
+					forcastBlock += '<div id="dailyItem">' +
+							'<div id="dayTitle">' + forcastDay + '</div>' +
+							'<div id="dayIcon"><img src=' + iconURL + icon + iconExtension + '></div>' +
+							'<div id="dayTemp"><img src=' + smallIconURL + 'temp_high.png>' + lowTemp + '&deg; | ' + '&deg;' + highTemp + '&deg;</div>' +
+							'<div id="dayRain"><img src=' + smallIconURL + 'umbrella.png>'  + probRain + '% - ' + mmRain + 'mm</div>' + 
+							<!--'<div id="dayHumidity">Humidity: ' + humidity + '%</div>' -->								
+							'</div>';						
+				}
+			}
+			forcastBlock += '</div>';
+			jQuery('#dailyForecast').html(forcastBlock);
+		})
+		.fail(function() 
+		{
+			forcastBlock = '<div id="dailyPanel">';
+			for(var i=0; i<4; i++)
+			{
+				forcastDay = 'Monday';
+				highTemp = 23;
+				lowTemp = 10;
+				icon = 'chancetstorms';
+				probRain = 54;
+				mmRain = 10;
+				humidity = 50;
+
+				if( i == 0)
+				{
+					jQuery('#nowTempMinMax').html('<img src=' + smallIconURL + 'temp_high.png>' + lowTemp + '&deg; | ' + highTemp + '&deg;');					
+					jQuery('#nowRain').html('<img src=' + smallIconURL + 'umbrella.png>' + probRain + '% - ' + mmRain + 'mm');					
+				}
+				else
+				{
+					forcastBlock += '<div id="dailyItem">' +
+							'<div id="dayTitle">' + forcastDay + '</div>' +
+							'<div id="dayIcon"><img src=' + iconURL + icon + iconExtension + '></div>' +
+							'<div id="dayTemp"><img src=' + smallIconURL + 'temp_high.png>' + lowTemp + '&deg; | ' + '&deg;' + highTemp + '&deg;</div>' +
+							'<div id="dayRain"><img src=' + smallIconURL + 'umbrella.png>'  + probRain + '% - ' + mmRain + 'mm</div>' + 
+							<!--'<div id="dayHumidity">Humidity: ' + humidity + '%</div>' -->								
+							'</div>';				
+				}
+			}
+			forcastBlock += '</div>';
+			jQuery('#dailyForecast').html(forcastBlock);
+		});			
+}
+
+function updateHourlyForecast ()
+{
+	var forcastHr;
+	var icon;
+	var temp;
+	var humidity;
+	var probRain;
+	var items = 0;
+	var maxItems = 6;
+
+	var forcastBlock = '';
+
+	$.getJSON(forcastHourlyURL)
+		.then(function(parsed_json) 
+		{
+			
+			var forecast = parsed_json['hourly_forecast'];
+
+			forcastBlock = '<div id="hourlyPanel">';
+			for (index in forecast) 
+			{
+				forcastHr = forecast[index]['FCTTIME']['hour'];
+				icon = forecast[index]['icon'];
+			icon_url = forecast[index]['icon_url'];
+			var filename = icon_url.substring(icon_url.lastIndexOf('/')+1);
+			icon = filename.slice(0, -4);
+
+				temp = forecast[index]['temp']['metric'];
+				humidity = forecast[index]['humidity'];
+				probRain = forecast[index]['pop'];
+				
+				forcastBlock += '<div id="hourlyItem">' +
+									'<div id="hourlyHr">' + forcastHr + 'h </div>' +
+									'<div id="hourlyIcon"><img src=' + iconURL + icon + iconExtension + '></div>' +
+									'<div id="hourlyInfo">' + temp + '&deg;</div>' + 
+									<!--'<div id="hourlyHumidity">Humidity: ' + humidity + '%</div>' +-->								
+									'<div id="hourlyProbRain"><img src=' + smallIconURL + 'umbrella.png>'  + probRain + '%</div>' +
+									'</div>';									
+									
+				items++;
+				if(items > maxItems)
+				  break;
+			}
+			forcastBlock += '</div>';
+			jQuery('#hourlyForecast').html(forcastBlock);
+		})
+		.fail(function() 
+		{
+			forcastBlock += '<div id="hourlyPanel">';
+			for(var i=0; i<maxItems; i++)
+			{
+				forcastHr = 18;
+				icon = 'chancetstorms';
+				temp = 10;
+				humidity = 80;
+				probRain = 30;
+				
+				forcastBlock += '<div id="hourlyItem">' +
+									'<div id="hourlyHr">' + forcastHr + 'h </div>' +
+									'<div id="hourlyIcon"><img src=' + iconURL + icon + iconExtension + '></div>' +
+									'<div id="hourlyInfo">' + temp + '&deg;</div>' + 
+									<!--'<div id="hourlyHumidity">Humidity: ' + humidity + '%</div>' +-->								
+									'<div id="hourlyProbRain"><img src=' + smallIconURL + 'umbrella.png>'  + probRain + '%</div>' +
+									'</div>';									
+			}
+			forcastBlock += '</div>';
+			jQuery('#hourlyForecast').html(forcastBlock);
+		});		
+}
+
+jQuery(document).ready(function($) {
+
+apiKey = "XXXXXXXXXXXXXXXXXXXXX"; //put your weather underground api key here
+geolocation = "XXXXXXXXXXXXX"; //ie: pur yout location here: ie: IL/Chicago
+
+nowURL = "http://api.wunderground.com/api/" + apiKey + "/geolookup/conditions/q/" + geolocation +".json";
+forcastDailyURL = "http://api.wunderground.com/api/" + apiKey + "/forecast/q/" + geolocation +".json";
+forcastHourlyURL = "http://api.wunderground.com/api/" + apiKey + "/hourly/q/" + geolocation +".json"; 	
+astronomyURL = "http://api.wunderground.com/api/" + apiKey + "/astronomy/q/" + geolocation +".json";
+
+iconURL = "icons/";
+iconExtension = ".png";
+smallIconURL = "icons/decos/";
+
+updateClock();
+updateDate();
+updateAstronomy();
+updateCurrentWeather();
+updateDailyForecast();
+updateHourlyForecast();
+		
+setInterval('updateClock()', 1000);
+setInterval('updateCurrentWeather()', 1000*60*15);   
+setInterval('updateHourlyForecast()', 1000*60*15);    
+setInterval('updateDailyForecast()', 1000*60*60);    
+
+jQuery("#toggleFullScreen").click(function() {
+	if (
+		document.fullscreenElement ||
+		document.webkitFullscreenElement ||
+		document.mozFullScreenElement ||
+		document.msFullscreenElement
+	)
+	{
+	  //exit fullscreen
+	  if(document.exitFullscreen) 
+		document.exitFullscreen();
+	  else if(document.mozCancelFullScreen) 
+		document.mozCancelFullScreen();
+	  else if(document.webkitExitFullscreen) 
+		document.webkitExitFullscreen();
+	  else if(document.msExitFullscreen) 
+		document.msExitFullscreen();
+	} 
+	else 
+	{
+		//go fullscreen
+		if(document.documentElement.requestFullscreen)
+		  document.documentElement.requestFullscreen();
+		else if(document.documentElement.mozRequestFullScreen)
+		  document.documentElement.mozRequestFullScreen();
+		else if(document.documentElement.webkitRequestFullScreen)
+		  document.documentElement.webkitRequestFullScreen();
+		else if(document.documentElement.msRequestFullscreen)
+		  document.documentElement.msRequestFullscreen();	  
+	}
+});
+
+});
+</script>
+<body>
+
+<div id="toggleFullScreen">x</div>
+
+<div id="main">
+		
+	<div id="date">
+		<div id="datePanel">
+			<div id="dateDay"></div>
+			<div id="dateDayDate"></div>
+			<div id="dateMonth"></div>
+			<div id="dateYear"></div>
+		</div>
+	</div>
+		
+	<div id="clock">
+		<div id="weatherPanel">
+			<div id="clockPanel">
+				<div id="clockHr"></div>:<div id="clockMin"></div><!--:<div id="clockSec"></div>-->
+			</div>
+		</div>
+		<div id="weatherPanel">
+			<!--<div id="location"></div> -->
+			<div id="nowIcon"></div>
+			<div id="nowTempMinMax"></div>
+			<!--<div id="nowWeatherText"></div> -->
+		</div>
+		<div id="weatherPanel">
+			<div id="nowTemp"></div>				
+		</div>	
+	</div>
+
+
+
+	<div id="hourlyForecast">
+	</div>
+
+	<div id="dailyForecast">
+	</div>
+	
+	<div id="info">
+			<div id="nowRain"></div>				
+			<div id="nowUV"></div>		
+			<div id="nowWind"></div>
+			<div id="nowHumidity"></div>
+
+			<div id="datePanel">
+				<div id="astroSunriseIcon"></div>
+				<div id="astroSunrise"><div id="astroSunriseHr"></div>:<div id="astroSunriseMin"></div></div>
+				<div id="astroSunsetIcon"></div>
+				<div id="astroSunset"><div id="astroSusnetHr"></div>:<div id="astroSunsetMin"></div></div>			
+			</div>
+	</div>
+	
+</div> <!-- main -->
+
+</body>
+</html>

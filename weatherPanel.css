@@ -1,0 +1,153 @@
+@charset "utf-8";
+/* CSS Document */
+h1, h2, h3, h4, h5, h6 {font-family: 'Open Sans'; color:#fff;}
+
+body {
+	font-family: 'Open Sans', serif;
+	background-color:black;
+	color: white;	
+}
+
+#toggleFullScreen{
+	padding: 1vw;
+	color: #888;
+	font-size: 1vw;
+	position:relative;
+	z-index:1000;
+	text-align:right;
+}
+
+#main {
+	display: flex; /* or inline-flex */
+	flex-direction: column;
+	position: absolute;
+	top:0.5%;
+	bottom: 0.5%;
+	left: 0.5%;
+	right: 0.5%;	
+	margin: auto;
+}
+
+#clock {
+	display: flex;	
+	flex-grow:2;
+	justify-content: space-around;
+	align-items: center;
+}
+
+
+#info, #date{
+	display: flex;	
+	background-color: #222;
+	justify-content: space-around;
+	align-items: center;
+	padding: 1vmin;
+}
+
+#hourlyForecast, #dailyForecast {
+	display: flex;	
+	flex-grow:5;
+	justify-content: center;
+	align-items: center;
+}
+
+#clockPanel {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 15vw;
+}
+#nowTemp {
+	font-size: 15vw;
+}
+#datePanel{
+	display: flex;	
+}
+
+#hourlyPanel, #dailyPanel{
+	display: flex;
+}
+
+#weatherPanel{
+	display: flex;	
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+#dailyItem, #hourlyItem {
+	display: flex;
+	flex-direction:column;
+	padding: 3vw;
+	text-align:center;
+}
+
+#clockHr {
+	font-weight: bolder;
+}
+
+#clockMin {
+	font-weight: lighter;
+}
+
+#nowIcon img{
+	height:15vmin;
+}
+
+#astroSunrise, #astroSunset, #astroSunriseIcon, #astroSunsetIcon{
+	display: flex;			
+	justify-content: center;
+	align-items: center;
+}
+
+#nowFeelsLike{
+	font-style: italic;
+}
+#uv-block0, #uv-block1,#uv-block2,#uv-block3,#uv-block4,#uv-block5,#uv-block6,#uv-block7,#uv-block8,#uv-block9{
+	margin:0.2vmin;
+	display: inline-block;
+	width: 1.5vmin;
+	height: 1.5vmin;
+}
+
+#dayTitle, #hourlyHr{
+	font-size: 3.5vmin;	
+	font-weight: bolder;		
+}
+
+#nowFeelsLike{
+	font-size: 2vmin;
+	text-align: center;
+}
+
+#uvIcon {	
+	margin:0.2vmin;
+	display: inline-block;
+}
+
+#hourlyIcon img, #dayIcon img{
+	height: 6vmin;
+	vertical-align: middle;
+	text-align: center;
+}
+
+#dateDay, #dateMonth,  #dateYear, #dateDayDate, #location, #nowWeatherText{
+	font-size: 5vmin;
+}
+
+#dateDay, #dateMonth,  #dateYear, #dateDayDate{
+	padding-right: 1vw;
+}
+
+#dayTemp img, #dayRain img, #dayHumidity img, #hourlyProbRain img, #hourlyProbRain img, #hourlyHumidity img, #hourlyTemp img, #uvIcon img, #nowTempMinMax img, #nowRain img, #nowUV img, #nowWind img, #nowHumidity img, #astroSunriseIcon img, #astroSunsetIcon img{
+	width: 7vmin;
+	vertical-align: middle;
+}
+
+#nowTempMinMax{
+	font-size: 5vmin;	
+}
+
+#dayTemp, #dayRain, #dayHumidity, #hourlyProbRain, #hourlyProbRain, #hourlyHumidity, #hourlyTemp, #hourlyInfo, #nowHumidity, #astroSunrise, #astroSunset, #nowRain, #nowWind, #nowUV{
+	font-size: 2vw;	
+}
