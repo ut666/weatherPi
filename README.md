@@ -1,7 +1,7 @@
 # weatherPi
 An html based weather/clock info panel that uses the weather underground API
 
-![alt tag](http://url/to/https://github.com/ut666/weatherPi/weatherPanel.png)
+![alt tag](https://github.com/ut666/weatherPi/blob/master/weatherPanel.png)
 
 This is just a simple info panel I display on some tablets I use as clock around the house.
 The css/flex is only tested on chrome.
