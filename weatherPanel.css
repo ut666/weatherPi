@@ -126,7 +126,7 @@ body {
 }
 
 #hourlyIcon img, #dayIcon img{
-	height: 6vmin;
+	height: 10vmin;
 	vertical-align: middle;
 	text-align: center;
 }

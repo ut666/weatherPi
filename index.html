@@ -169,9 +169,9 @@ function updateCurrentWeather ()
 			jQuery('#nowFeelsLike').html("feels like " + feelslike_c + "&deg;");
 			jQuery('#nowIcon').html('<img src=' + iconURL + icon + iconExtension + '>');
 			jQuery('#nowTemp').html(temp_c + "&deg;");
-			jQuery('#nowHumidity').html('<img src=' + smallIconURL + 'humidity.png>' + relative_humidity + '%');
+			jQuery('#nowHumidity').html('<img src=' + smallIconURL + 'humidity.png>' + relative_humidity);
 			jQuery('#nowWeatherText').html(weather);
-			jQuery('#nowWind').html('<img src=' + smallIconURL + 'wind.png>' + windDir + 'kph');
+			jQuery('#nowWind').html('<img src=' + smallIconURL + 'wind.png>' + windDir + ' ' + windKhp + 'kph');
 
 			jQuery('#nowUV').html("UV: " + UV);
 			//jQuery('#nowUV').html("<img src=icons/decos/sunglasses.png>");
@@ -374,8 +374,8 @@ function updateHourlyForecast ()
 
 jQuery(document).ready(function($) {
 
-apiKey = "XXXXXXXXXXXXXXXXXXXXX"; //put your weather underground api key here
-geolocation = "XXXXXXXXXXXXX"; //ie: pur yout location here: ie: IL/Chicago
+apiKey = "XXXXXXXXXXXXXXXXXXXXXXXXX";
+geolocation = "XX/XXXXXXXXXX";
 
 nowURL = "http://api.wunderground.com/api/" + apiKey + "/geolookup/conditions/q/" + geolocation +".json";
 forcastDailyURL = "http://api.wunderground.com/api/" + apiKey + "/forecast/q/" + geolocation +".json";
@@ -394,9 +394,13 @@ updateDailyForecast();
 updateHourlyForecast();
 		
 setInterval('updateClock()', 1000);
+
 setInterval('updateCurrentWeather()', 1000*60*15);   
 setInterval('updateHourlyForecast()', 1000*60*15);    
+
 setInterval('updateDailyForecast()', 1000*60*60);    
+setInterval('updateDate()', 1000*60*60);    
+setInterval('updateAstronomy()', 1000*60*60);    
 
 jQuery("#toggleFullScreen").click(function() {
 	if (
